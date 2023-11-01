@@ -1,20 +1,19 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 $(function () {
 
   const currentDate = dayjs().format(' MMMM D, YYYY')
- 
-  
-  
+  //sets the current day to the id currentDay in the html
   $('#currentDay').text(currentDate)
 
-  function updateTimeClasses(){
-     // Define an array of time block IDs
+  // Define an array of time block IDs
   const timeBlockIds = [9, 10, 11, 12, 13, 14, 15, 16, 17]
+
+  //This function is for setting the css class per time block, based on the current hour
+  function updateTimeClasses(){
+  
   const currentHour = dayjs().hour();
 
     // Loop through the time block IDs and apply classes based on the current time
+    // Help with writing this function with the Xpert Learning Assistant
     timeBlockIds.forEach(function (timeBlockId) {
       const $timeBlock = $(`#hour-${timeBlockId}`);
 
@@ -29,10 +28,33 @@ $(function () {
 
   }
 
+  //Calls the function, and keeps calling it again every minute. 
   updateTimeClasses();
   setInterval(updateTimeClasses, 60000)
 
+ // Function to save user input to local storage
+$('.saveBtn').on('click', function (event) { 
+  // Find the closest time-block element
+  //researched this with examples from stack overflow
+  const timeBlockElement = $(event.target).closest('.time-block');
+  // Get the timeBlockId from its ID
+  const timeBlockId = timeBlockElement.attr('id');
+  // Find the description element within the same time-block
+  const description = timeBlockElement.find('.description').val();
+  
+  // Store the data in local storage
+  localStorage.setItem(timeBlockId, description);
+});
 
+// Function to retrieve and display user input from local storage
+function displayUserInput() {
+  timeBlockIds.forEach(function (timeBlockId) {
+    const description = localStorage.getItem(`hour-${timeBlockId}`);
+    $(`#hour-${timeBlockId} .description`).val(description);
+  });
+}
+
+displayUserInput();
 
   
   // TODO: Add a listener for click events on the save button. This code should
@@ -42,15 +64,9 @@ $(function () {
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
   //
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  //
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   //
-  // TODO: Add code to display the current date in the header of the page.
+  
 });
